@@ -6,12 +6,14 @@ import warehouseRoutes from "./warehouse.routes";
 import productRoutes from "./product.routes";
 import orderRoutes from "./order.routes";
 import userRoutes from "./user.routes";
+import addressRoutes from "./address.routes";
 
 const router = Router();
 
 router.use("/auth", authRoutes);
 router.use("/users", userRoutes)
 router.use("/clients", clientRoutes);
+router.use("/addresses", addressRoutes);
 router.use("/warehouses", warehouseRoutes);
 router.use("/products", productRoutes);
 router.use("/orders", orderRoutes);

@@ -10,3 +10,9 @@ export const createClientSchema = z.object({
 export const findClientByDocumentSchema = z.object({
     document: z.string().min(4),
 });
+
+export const updateClientSchema = z.object({
+    name: z.string().min(2).optional(),
+    email: z.email().optional(),
+    document: z.string().min(4).optional(),
+});
