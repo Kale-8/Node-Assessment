@@ -165,10 +165,35 @@ paths:
             example:
               name: "Client One"
               email: "client1@example.com"
-              phone: "555-1234"
+              document: "1234"
       responses:
         "201":
           description: Client created
+
+  /clients/find:
+    post:
+      tags: [ Clients ]
+      summary: Find a client by document number
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                document:
+                  type: string
+              required:
+                - document
+            example:
+              document: "123456789"
+      responses:
+        "200":
+          description: Client found
+        "404":
+          description: Client not found
 
   /clients/{id}:
     get:
@@ -199,7 +224,7 @@ paths:
             example:
               name: "Updated Client"
               email: "updatedclient@example.com"
-              phone: "555-5678"
+              document: "5678"
       responses:
         "200":
           description: Client updated
@@ -533,11 +558,11 @@ components:
       required:
         - name
         - email
-        - phone
+        - document
       properties:
         name: { type: string }
         email: { type: string }
-        phone: { type: string }
+        document: { type: string }
 
     Address:
       type: object
@@ -609,3 +634,4 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/OrderProduct"
+

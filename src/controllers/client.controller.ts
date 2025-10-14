@@ -18,3 +18,21 @@ export async function findClientByDocument(req: Request, res: Response) {
     const client = await clientService.findClientByDocument(document);
     res.json(client);
 }
+
+export async function getClientById(req: Request, res: Response) {
+    const id = parseInt(req.params.id);
+    const client = await clientService.getClientById(id);
+    res.json(client);
+}
+
+export async function updateClient(req: Request, res: Response) {
+    const id = parseInt(req.params.id);
+    const client = await clientService.updateClient(id, req.body);
+    res.json(client);
+}
+
+export async function deleteClient(req: Request, res: Response) {
+    const id = parseInt(req.params.id);
+    await clientService.deleteClient(id);
+    res.status(204).send();
+}

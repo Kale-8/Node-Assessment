@@ -25,5 +25,5 @@ export function createApp() {
 export async function initDb() {
     await sequelize.authenticate();
     // Sync models for tests/dev:
-    await sequelize.sync({alter: false});
+    await sequelize.sync({force: true});
 }

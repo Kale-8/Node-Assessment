@@ -20,3 +20,32 @@ export async function findClientByDocument(document: string) {
     if (!client) throw new Error("Client not found");
     return client;
 }
+
+// Get client by ID
+export async function getClientById(id: number) {
+    const client = await Client.findByPk(id, {include: [{model: Address, as: "addresses"}]});
+    if (!client) throw new Error("Client not found");
+    return client;
+}
+
+// Update client
+export async function updateClient(id: number, data: {name?: string; email?: string; document?: string}) {
+    const client = await Client.findByPk(id);
+    if (!client) throw new Error("Client not found");
+
+    // If document is being updated, check for duplicates
+    if (data.document && data.document !== client.document) {
+        const existing = await Client.findOne({where: {document: data.document}});
+        if (existing) throw new Error("Client with same document exists");
+    }
+
+    await client.update(data);
+    return client;
+}
+
+// Delete client
+export async function deleteClient(id: number) {
+    const client = await Client.findByPk(id);
+    if (!client) throw new Error("Client not found");
+    await client.destroy();
+}
