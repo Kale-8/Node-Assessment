@@ -1,0 +1,420 @@
+openapi: 3.0.1
+info:
+  title: FHL Logistics API
+  description: REST API to manage deliveries, orders, warehouses, and products for FHL Logistics.
+  version: "1.0.0"
+servers:
+  - url: /api
+tags:
+  - name: Auth
+    description: User authentication and registration
+  - name: Users
+    description: Manage system users (admin only)
+  - name: Clients
+    description: Manage logistics clients (admin only)
+  - name: Warehouses
+    description: Manage company warehouses
+  - name: Products
+    description: Manage products stored in warehouses
+  - name: Orders
+    description: Manage orders and product deliveries
+
+paths:
+  /auth/register:
+    post:
+      tags: [ Auth ]
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Register"
+      responses:
+        '201':
+          description: User created successfully
+        '400':
+          description: Invalid data
+        '409':
+          description: Email already exists
+
+  /auth/login:
+    post:
+      tags: [ Auth ]
+      summary: Login a user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Login"
+      responses:
+        '200':
+          description: Successful login with JWT token
+        '401':
+          description: Invalid credentials
+
+  /users:
+    get:
+      tags: [ Users ]
+      summary: List all users
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: List of users
+    post:
+      tags: [ Users ]
+      summary: Create a new user
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+      responses:
+        '201':
+          description: User created
+
+  /users/{id}:
+    get:
+      tags: [ Users ]
+      summary: Get a user by ID
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: "#/components/parameters/IdParam"
+      responses:
+        '200':
+          description: User found
+        '404':
+          description: User not found
+    put:
+      tags: [ Users ]
+      summary: Update a user by ID
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: "#/components/parameters/IdParam"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+      responses:
+        '200':
+          description: User updated
+    delete:
+      tags: [ Users ]
+      summary: Delete a user
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: "#/components/parameters/IdParam"
+      responses:
+        '204':
+          description: User deleted
+
+  /clients:
+    get:
+      tags: [ Clients ]
+      summary: Get all clients
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: List of clients
+    post:
+      tags: [ Clients ]
+      summary: Create a new client
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Client"
+      responses:
+        '201':
+          description: Client created
+
+  /clients/{id}:
+    get:
+      tags: [ Clients ]
+      summary: Get client by ID
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: "#/components/parameters/IdParam"
+      responses:
+        '200':
+          description: Client found
+        '404':
+          description: Client not found
+    put:
+      tags: [ Clients ]
+      summary: Update client data
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: "#/components/parameters/IdParam"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Client"
+      responses:
+        '200':
+          description: Client updated
+    delete:
+      tags: [ Clients ]
+      summary: Delete client
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: "#/components/parameters/IdParam"
+      responses:
+        '204':
+          description: Client deleted
+
+  /warehouses:
+    get:
+      tags: [ Warehouses ]
+      summary: List all warehouses
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: List of warehouses
+    post:
+      tags: [ Warehouses ]
+      summary: Create a warehouse
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Warehouse"
+      responses:
+        '201':
+          description: Warehouse created
+
+  /products:
+    get:
+      tags: [ Products ]
+      summary: Get all products
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: List of products
+    post:
+      tags: [ Products ]
+      summary: Create a new product
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Product"
+      responses:
+        '201':
+          description: Product created
+
+  /products/{id}:
+    get:
+      tags: [ Products ]
+      summary: Get product by ID
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: "#/components/parameters/IdParam"
+      responses:
+        '200':
+          description: Product found
+        '404':
+          description: Not found
+    put:
+      tags: [ Products ]
+      summary: Update product
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: "#/components/parameters/IdParam"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Product"
+      responses:
+        '200':
+          description: Product updated
+    delete:
+      tags: [ Products ]
+      summary: Delete product
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: "#/components/parameters/IdParam"
+      responses:
+        '204':
+          description: Product deleted
+
+  /orders:
+    get:
+      tags: [ Orders ]
+      summary: Get all orders
+      security:
+        - bearerAuth: [ ]
+      responses:
+        '200':
+          description: List of orders
+    post:
+      tags: [ Orders ]
+      summary: Create new order
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Order"
+      responses:
+        '201':
+          description: Order created
+
+  /orders/{id}:
+    get:
+      tags: [ Orders ]
+      summary: Get order by ID
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: "#/components/parameters/IdParam"
+      responses:
+        '200':
+          description: Order found
+    put:
+      tags: [ Orders ]
+      summary: Update order status or products
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: "#/components/parameters/IdParam"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OrderUpdate"
+      responses:
+        '200':
+          description: Order updated
+    delete:
+      tags: [ Orders ]
+      summary: Delete an order
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: "#/components/parameters/IdParam"
+      responses:
+        '204':
+          description: Order deleted
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  parameters:
+    IdParam:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+
+  schemas:
+    Register:
+      type: object
+      properties:
+        name: { type: string }
+        email: { type: string }
+        password: { type: string }
+        role: { type: string, enum: [ "admin", "analyst" ] }
+
+    Login:
+      type: object
+      properties:
+        email: { type: string }
+        password: { type: string }
+
+    User:
+      type: object
+      properties:
+        name: { type: string }
+        email: { type: string }
+        role: { type: string, enum: [ "admin", "analyst" ] }
+
+    Client:
+      type: object
+      properties:
+        name: { type: string }
+        email: { type: string }
+        phone: { type: string }
+        address: { type: string }
+
+    Warehouse:
+      type: object
+      properties:
+        name: { type: string }
+        location: { type: string }
+        capacity: { type: number }
+
+    Product:
+      type: object
+      properties:
+        name: { type: string }
+        sku: { type: string }
+        stock: { type: integer }
+        price: { type: number }
+        warehouseId: { type: string }
+
+    OrderProduct:
+      type: object
+      properties:
+        productId: { type: string }
+        quantity: { type: integer }
+        unitPrice: { type: number }
+
+    Order:
+      type: object
+      properties:
+        clientId: { type: string }
+        status: { type: string, enum: [ "pending", "completed", "cancelled" ] }
+        orderProducts:
+          type: array
+          items:
+            $ref: "#/components/schemas/OrderProduct"
+
+    OrderUpdate:
+      type: object
+      properties:
+        status: { type: string }
+        orderProducts:
+          type: array
+          items:
+            $ref: "#/components/schemas/OrderProduct"
