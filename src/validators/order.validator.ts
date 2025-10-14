@@ -16,3 +16,12 @@ export const createOrderSchema = z.object({
 export const changeStatusSchema = z.object({
     status: z.enum(["pending", "in_transit", "delivered"]),
 });
+
+export const updateOrderSchema = z.object({
+    status: z.enum(["pending", "in_transit", "delivered"]).optional(),
+    items: z.array(itemSchema).min(1).optional(),
+});
+
+export const idParamSchema = z.object({
+    id: z.string().regex(/^\d+$/, "ID must be a number").transform(Number),
+});

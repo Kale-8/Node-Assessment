@@ -77,12 +77,12 @@ async function seed() {
     console.log("Creating warehouses...");
     const [w1] = await Warehouse.findOrCreate({
         where: {name: "Bogota Warehouse"},
-        defaults: {active: true} as any
+        defaults: {location: "Bogotá, Colombia", active: true} as any
     });
 
     const [w2] = await Warehouse.findOrCreate({
         where: {name: "Medellin Warehouse"},
-        defaults: {active: true} as any
+        defaults: {location: "Medellín, Colombia", active: true} as any
     });
 
     const w1Id = w1.get("id");
@@ -96,12 +96,12 @@ async function seed() {
     console.log("Creating products...");
     const [p1] = await Product.findOrCreate({
         where: {code: "P001"},
-        defaults: {name: "Widget A", description: "Small widget"} as any
+        defaults: {name: "Widget A", description: "Small widget", price: 25.50, stock: 100} as any
     });
 
     const [p2] = await Product.findOrCreate({
         where: {code: "P002"},
-        defaults: {name: "Widget B", description: "Medium widget"} as any
+        defaults: {name: "Widget B", description: "Medium widget", price: 45.75, stock: 50} as any
     });
 
     const p1Id = p1.get("id");

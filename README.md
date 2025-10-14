@@ -8,7 +8,9 @@
 
 ## 🚀 Overview
 
-FHL Logistics API is a comprehensive RESTful API designed to manage logistics operations including deliveries, orders, warehouses, products, and clients. Built with Node.js, TypeScript, Express, and PostgreSQL, this system provides a robust solution for logistics management with role-based access control and complete CRUD operations.
+FHL Logistics API is a comprehensive RESTful API designed to manage logistics operations including deliveries, orders,
+warehouses, products, and clients. Built with Node.js, TypeScript, Express, and PostgreSQL, this system provides a
+robust solution for logistics management with role-based access control and complete CRUD operations.
 
 ## 🛠 Tech Stack
 
@@ -28,10 +30,11 @@ FHL Logistics API is a comprehensive RESTful API designed to manage logistics op
 Once the server is running, you can access the **Swagger API Documentation** at:
 
 ```
-http://localhost:3000/api/docs
+http://localhost:4000/api/docs
 ```
 
 This interactive documentation allows you to:
+
 - View all available endpoints
 - Test API requests directly from the browser
 - See request/response schemas
@@ -74,7 +77,8 @@ psql -U postgres
 Then run:
 
 ```sql
-CREATE DATABASE fhl_db;
+CREATE
+DATABASE fhl_db;
 ```
 
 #### Create Tables
@@ -93,7 +97,7 @@ Create a `.env` file in the root directory of the project with the following var
 
 ```env
 # Server Configuration
-PORT=3000
+PORT=4000
 
 # Database Configuration
 SQL_URI=postgresql://postgres:yourpassword@localhost:5432/fhl_db
@@ -106,7 +110,8 @@ JWT_EXPIRES_IN=24h
 BCRYPT_SALT_ROUNDS=10
 ```
 
-**Important:** Replace `yourpassword` with your actual PostgreSQL password and `your_super_secret_jwt_key_change_this_in_production` with a strong secret key.
+**Important:** Replace `yourpassword` with your actual PostgreSQL password and
+`your_super_secret_jwt_key_change_this_in_production` with a strong secret key.
 
 ### 5. Seed Database (Optional)
 
@@ -117,18 +122,19 @@ npm run seed
 ```
 
 This will create:
+
 - **Admin User:** admin@fhl.com / admin123
 - **Analyst User:** analyst@fhl.com / analyst123
 - Sample clients, warehouses, and products
 
 ## 🎯 Available Scripts
 
-| Script | Command | Description |
-|--------|---------|-------------|
-| **Development** | `npm run dev` | Start the server in development mode with auto-reload |
-| **Build** | `npm run build` | Compile TypeScript to JavaScript in `dist/` folder |
-| **Start** | `npm start` | Run the compiled production build |
-| **Seed** | `npm run seed` | Populate database with sample data |
+| Script          | Command         | Description                                           |
+|-----------------|-----------------|-------------------------------------------------------|
+| **Development** | `npm run dev`   | Start the server in development mode with auto-reload |
+| **Build**       | `npm run build` | Compile TypeScript to JavaScript in `dist/` folder    |
+| **Start**       | `npm start`     | Run the compiled production build                     |
+| **Seed**        | `npm run seed`  | Populate database with sample data                    |
 
 ## 🚀 Running the Application
 
@@ -138,7 +144,7 @@ This will create:
 npm run dev
 ```
 
-The server will start at `http://localhost:3000` (or the port specified in your .env file).
+The server will start at `http://localhost:4000` (or the port specified in your .env file).
 
 ### Production Mode
 
@@ -163,18 +169,20 @@ Authorization: Bearer <your_jwt_token>
 
 ### Default Test Users (after running seed):
 
-| Email | Password | Role |
-|-------|----------|------|
-| admin@fhl.com | admin123 | admin |
+| Email           | Password   | Role    |
+|-----------------|------------|---------|
+| admin@fhl.com   | admin123   | admin   |
 | analyst@fhl.com | analyst123 | analyst |
 
 ## 📍 API Endpoints Overview
 
 ### Authentication
+
 - `POST /api/auth/register` - Register a new user
 - `POST /api/auth/login` - Login and receive JWT token
 
 ### Clients (Admin only)
+
 - `GET /api/clients` - List all clients
 - `POST /api/clients` - Create a new client
 - `GET /api/clients/:id` - Get client by ID
@@ -182,6 +190,7 @@ Authorization: Bearer <your_jwt_token>
 - `DELETE /api/clients/:id` - Delete client
 
 ### Warehouses
+
 - `GET /api/warehouses` - List all warehouses
 - `POST /api/warehouses` - Create warehouse
 - `GET /api/warehouses/:id` - Get warehouse details
@@ -190,6 +199,7 @@ Authorization: Bearer <your_jwt_token>
 - `PATCH /api/warehouses/:id/toggle` - Activate/deactivate warehouse
 
 ### Products
+
 - `GET /api/products` - List all products
 - `POST /api/products` - Create product
 - `GET /api/products/:id` - Get product by ID
@@ -197,6 +207,7 @@ Authorization: Bearer <your_jwt_token>
 - `DELETE /api/products/:id` - Delete product
 
 ### Orders
+
 - `GET /api/orders` - Get order history
 - `POST /api/orders` - Create new order
 - `GET /api/orders/client/:clientId` - Get orders by client
@@ -292,12 +303,12 @@ Node-Assessment/
 
 ```bash
 # Login
-curl -X POST http://localhost:3000/api/auth/login \
+curl -X POST http://localhost:4000/api/auth/login \
   -H "Content-Type: application/json" \
   -d '{"email":"admin@fhl.com","password":"admin123"}'
 
 # Get warehouses (with token)
-curl -X GET http://localhost:3000/api/warehouses \
+curl -X GET http://localhost:4000/api/warehouses \
   -H "Authorization: Bearer YOUR_JWT_TOKEN"
 ```
 

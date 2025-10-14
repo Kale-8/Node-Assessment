@@ -7,6 +7,11 @@ export async function listActiveWarehouses() {
     return Warehouse.findAll();
 }
 
+// Create warehouse
+export async function createWarehouse(name: string, location: string) {
+    return await Warehouse.create({name, location, active: true} as any);
+}
+
 // Find warehouses by id and changes active status
 export async function toggleWarehouseActive(id: number, active: boolean) {
     const wh = await Warehouse.findByPk(id);
