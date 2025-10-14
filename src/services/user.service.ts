@@ -5,7 +5,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const SALT_ROUNDS = Number(process.env.BCRYPT_SALT_ROUNDS || 10);
+const SALT_ROUNDS = Number(process.env.BCRYPT_SALT_ROUNDS);
 
 // List all users
 export async function listUsers() {
