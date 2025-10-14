@@ -1,26 +1,26 @@
 // Order model
-import {Model, DataTypes} from "sequelize";
+import {Model, DataTypes, InferAttributes, InferCreationAttributes} from "sequelize";
 import sequelize from "../config/database";
 
-export class Order extends Model {
-    public id!: number;
-    public clientId!: number;
-    public warehouseId!: number;
-    public status!: "pending" | "in_transit" | "delivered";
-    public createdAt!: Date;
+export class Order extends Model<InferAttributes<Order>, InferCreationAttributes<Order>> {
+    declare id: number;
+    declare clientId: number;
+    declare warehouseId: number;
+    declare status: "pending" | "in_transit" | "delivered";
+    declare createdAt: Date;
 }
 
 Order.init(
     {
         id: {type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true},
-        clientId: {type: DataTypes.INTEGER, allowNull: false},
-        warehouseId: {type: DataTypes.INTEGER, allowNull: false},
+        clientId: {field: "client_id", type: DataTypes.INTEGER, allowNull: false},
+        warehouseId: {field: "warehouse_id", type: DataTypes.INTEGER, allowNull: false},
         status: {
             type: DataTypes.ENUM("pending", "in_transit", "delivered"),
             allowNull: false,
             defaultValue: "pending",
         },
-        createdAt: {type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW},
+        createdAt: {field: "created_at", type: DataTypes.DATE, allowNull: false, defaultValue: DataTypes.NOW},
     },
     {
         sequelize,

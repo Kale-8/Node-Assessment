@@ -1,22 +1,18 @@
 // User model
-import {Model, DataTypes} from "sequelize";
+import {Model, DataTypes, InferAttributes, InferCreationAttributes} from "sequelize";
 import sequelize from "../config/database";
 
-export class User extends Model {
-    public id!: number;
-    public name!: string;
-    public email!: string;
-    public password!: string;
-    public role!: "admin" | "analyst";
+export class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
+    declare id: number;
+    declare name: string;
+    declare email: string;
+    declare password: string;
+    declare role: "admin" | "analyst";
 }
 
 User.init(
     {
-        id: {
-            type: DataTypes.INTEGER,
-            autoIncrement: true,
-            primaryKey: true,
-        },
+        id: {type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true},
         name: {type: DataTypes.STRING, allowNull: false},
         email: {type: DataTypes.STRING, allowNull: false, unique: true},
         password: {type: DataTypes.STRING, allowNull: false},

@@ -29,7 +29,7 @@ export async function createOrder(clientId: number, warehouseId: number, items: 
     // Transactional creation
     const t = await sequelize.transaction();
     try {
-        const order = await Order.create({clientId, warehouseId, status: "pending"}, {transaction: t});
+        const order = await Order.create({clientId, warehouseId, status: "pending"} as any, {transaction: t});
         for (const it of items) {
             await OrderItem.create({
                 orderId: order.id,

@@ -1,11 +1,11 @@
 // Warehouse model
-import {Model, DataTypes} from "sequelize";
+import {Model, DataTypes, InferAttributes, InferCreationAttributes} from "sequelize";
 import sequelize from "../config/database";
 
-export class Warehouse extends Model {
-    public id!: number;
-    public name!: string;
-    public active!: boolean;
+export class Warehouse extends Model<InferAttributes<Warehouse>, InferCreationAttributes<Warehouse>> {
+    declare id: number;
+    declare name: string;
+    declare active: boolean;
 }
 
 Warehouse.init(

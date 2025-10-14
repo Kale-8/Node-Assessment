@@ -6,7 +6,7 @@ export async function createClient(document: string, name: string, email: string
     // duplicate document check
     const existing = await Client.findOne({where: {document}});
     if (existing) throw new Error("Client with same document exists");
-    return await Client.create({document, name, email});
+    return await Client.create({document, name, email} as any);
 }
 
 // List clients
