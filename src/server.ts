@@ -1,6 +1,7 @@
 import dotenv from "dotenv";
 
 dotenv.config();
+
 import {createApp, initDb} from "./app";
 
 const PORT = Number(process.env.PORT);
