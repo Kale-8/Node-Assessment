@@ -1,0 +1,611 @@
+openapi: 3.0.1
+info:
+  title: FHL Logistics API
+  description: REST API to manage clients, warehouses, products, and orders for FHL Logistics.
+  version: "1.0.0"
+
+servers:
+  - url: http://localhost:4000/api
+    description: Local development server
+
+tags:
+  - name: Auth
+    description: User authentication and registration
+  - name: Users
+    description: Manage system users (admin only)
+  - name: Clients
+    description: Manage logistics clients (admin only)
+  - name: Addresses
+    description: Manage client addresses
+  - name: Warehouses
+    description: Manage company warehouses
+  - name: Products
+    description: Manage warehouse products
+  - name: Orders
+    description: Manage customer orders and deliveries
+
+paths:
+
+  /auth/register:
+    post:
+      tags: [ Auth ]
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Register"
+            example:
+              name: "Admin User"
+              email: "admin@example.com"
+              password: "Admin123!"
+              role: "admin"
+      responses:
+        "201":
+          description: User created successfully
+        "400":
+          description: Invalid data
+        "409":
+          description: Email already exists
+
+  /auth/login:
+    post:
+      tags: [ Auth ]
+      summary: Login a user and get JWT
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Login"
+            example:
+              email: "admin@example.com"
+              password: "Admin123!"
+      responses:
+        "200":
+          description: Successful login with JWT token
+        "401":
+          description: Invalid credentials
+
+  /users:
+    get:
+      tags: [ Users ]
+      summary: List all users
+      security:
+        - bearerAuth: [ ]
+      responses:
+        "200":
+          description: List of users
+    post:
+      tags: [ Users ]
+      summary: Create a new user (admin only)
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserCreate"
+            example:
+              name: "Analyst User"
+              email: "analyst@example.com"
+              password: "Analyst123!"
+              role: "analyst"
+      responses:
+        "201":
+          description: User created
+
+  /users/{id}:
+    get:
+      tags: [ Users ]
+      summary: Get a user by ID
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: "#/components/parameters/IdParam"
+      responses:
+        "200":
+          description: User found
+        "404":
+          description: User not found
+    put:
+      tags: [ Users ]
+      summary: Update a user
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: "#/components/parameters/IdParam"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserUpdate"
+            example:
+              name: "Updated User"
+              email: "updated@example.com"
+              password: "NewPass123!"
+              role: "analyst"
+      responses:
+        "200":
+          description: User updated
+    delete:
+      tags: [ Users ]
+      summary: Delete a user
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: "#/components/parameters/IdParam"
+      responses:
+        "204":
+          description: User deleted
+
+  /clients:
+    get:
+      tags: [ Clients ]
+      summary: Get all clients
+      security:
+        - bearerAuth: [ ]
+      responses:
+        "200":
+          description: List of clients
+    post:
+      tags: [ Clients ]
+      summary: Create a new client
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Client"
+            example:
+              name: "Client One"
+              email: "client1@example.com"
+              phone: "555-1234"
+      responses:
+        "201":
+          description: Client created
+
+  /clients/{id}:
+    get:
+      tags: [ Clients ]
+      summary: Get a client by ID
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: "#/components/parameters/IdParam"
+      responses:
+        "200":
+          description: Client found
+        "404":
+          description: Client not found
+    put:
+      tags: [ Clients ]
+      summary: Update client data
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: "#/components/parameters/IdParam"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Client"
+            example:
+              name: "Updated Client"
+              email: "updatedclient@example.com"
+              phone: "555-5678"
+      responses:
+        "200":
+          description: Client updated
+    delete:
+      tags: [ Clients ]
+      summary: Delete a client
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: "#/components/parameters/IdParam"
+      responses:
+        "204":
+          description: Client deleted
+
+  /addresses:
+    get:
+      tags: [ Addresses ]
+      summary: List all addresses
+      security:
+        - bearerAuth: [ ]
+      responses:
+        "200":
+          description: List of addresses
+    post:
+      tags: [ Addresses ]
+      summary: Create a new address for a client
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Address"
+            example:
+              clientId: 1
+              address: "123 Main St"
+              city: "Bogotá"
+      responses:
+        "201":
+          description: Address created
+
+  /addresses/{id}:
+    get:
+      tags: [ Addresses ]
+      summary: Get address by ID
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: "#/components/parameters/IdParam"
+      responses:
+        "200":
+          description: Address found
+        "404":
+          description: Not found
+    put:
+      tags: [ Addresses ]
+      summary: Update an address
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: "#/components/parameters/IdParam"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Address"
+            example:
+              clientId: 1
+              address: "456 Updated St"
+              city: "Medellín"
+      responses:
+        "200":
+          description: Address updated
+    delete:
+      tags: [ Addresses ]
+      summary: Delete an address
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: "#/components/parameters/IdParam"
+      responses:
+        "204":
+          description: Address deleted
+
+  /warehouses:
+    get:
+      tags: [ Warehouses ]
+      summary: List all warehouses
+      security:
+        - bearerAuth: [ ]
+      responses:
+        "200":
+          description: List of warehouses
+    post:
+      tags: [ Warehouses ]
+      summary: Create a warehouse
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Warehouse"
+            example:
+              name: "Main Warehouse"
+              location: "Bogotá"
+              capacity: 5000
+      responses:
+        "201":
+          description: Warehouse created
+
+  /products:
+    get:
+      tags: [ Products ]
+      summary: List all products
+      security:
+        - bearerAuth: [ ]
+      responses:
+        "200":
+          description: List of products
+    post:
+      tags: [ Products ]
+      summary: Create a new product
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Product"
+            example:
+              name: "Laptop"
+              sku: "LP1001"
+              stock: 50
+              price: 2500.5
+              warehouseId: 1
+      responses:
+        "201":
+          description: Product created
+
+  /products/{id}:
+    get:
+      tags: [ Products ]
+      summary: Get product by ID
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: "#/components/parameters/IdParam"
+      responses:
+        "200":
+          description: Product found
+        "404":
+          description: Product not found
+    put:
+      tags: [ Products ]
+      summary: Update product
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: "#/components/parameters/IdParam"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Product"
+            example:
+              name: "Laptop Updated"
+              sku: "LP1001-U"
+              stock: 60
+              price: 2600.75
+              warehouseId: 1
+      responses:
+        "200":
+          description: Product updated
+    delete:
+      tags: [ Products ]
+      summary: Delete product
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: "#/components/parameters/IdParam"
+      responses:
+        "204":
+          description: Product deleted
+
+  /orders:
+    get:
+      tags: [ Orders ]
+      summary: List all orders
+      security:
+        - bearerAuth: [ ]
+      responses:
+        "200":
+          description: List of orders
+    post:
+      tags: [ Orders ]
+      summary: Create new order (with products)
+      security:
+        - bearerAuth: [ ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Order"
+            example:
+              clientId: 1
+              status: "pending"
+              orderProducts:
+                - productId: 1
+                  quantity: 2
+                  unitPrice: 2500.5
+                - productId: 2
+                  quantity: 1
+                  unitPrice: 500.0
+      responses:
+        "201":
+          description: Order created
+
+  /orders/{id}:
+    get:
+      tags: [ Orders ]
+      summary: Get order by ID
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: "#/components/parameters/IdParam"
+      responses:
+        "200":
+          description: Order found
+    put:
+      tags: [ Orders ]
+      summary: Update order status or products
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: "#/components/parameters/IdParam"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OrderUpdate"
+            example:
+              status: "completed"
+              orderProducts:
+                - productId: 1
+                  quantity: 3
+                  unitPrice: 2500.5
+      responses:
+        "200":
+          description: Order updated
+    delete:
+      tags: [ Orders ]
+      summary: Delete an order
+      security:
+        - bearerAuth: [ ]
+      parameters:
+        - $ref: "#/components/parameters/IdParam"
+      responses:
+        "204":
+          description: Order deleted
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  parameters:
+    IdParam:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+
+  schemas:
+
+    Register:
+      type: object
+      required:
+        - name
+        - email
+        - password
+        - role
+      properties:
+        name: { type: string }
+        email: { type: string }
+        password: { type: string }
+        role: { type: string, enum: [ "admin", "analyst" ] }
+
+    Login:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email: { type: string }
+        password: { type: string }
+
+    UserCreate:
+      type: object
+      required:
+        - name
+        - email
+        - password
+        - role
+      properties:
+        name: { type: string }
+        email: { type: string }
+        password: { type: string }
+        role: { type: string, enum: [ "admin", "analyst" ] }
+
+    UserUpdate:
+      type: object
+      properties:
+        name: { type: string }
+        email: { type: string }
+        password: { type: string }
+        role: { type: string, enum: [ "admin", "analyst" ] }
+
+    Client:
+      type: object
+      required:
+        - name
+        - email
+        - phone
+      properties:
+        name: { type: string }
+        email: { type: string }
+        phone: { type: string }
+
+    Address:
+      type: object
+      required:
+        - clientId
+        - address
+        - city
+      properties:
+        clientId: { type: integer }
+        address: { type: string }
+        city: { type: string }
+
+    Warehouse:
+      type: object
+      required:
+        - name
+        - location
+        - capacity
+      properties:
+        name: { type: string }
+        location: { type: string }
+        capacity: { type: number }
+
+    Product:
+      type: object
+      required:
+        - name
+        - sku
+        - stock
+        - price
+        - warehouseId
+      properties:
+        name: { type: string }
+        sku: { type: string }
+        stock: { type: integer }
+        price: { type: number }
+        warehouseId: { type: integer }
+
+    OrderProduct:
+      type: object
+      required:
+        - productId
+        - quantity
+        - unitPrice
+      properties:
+        productId: { type: integer }
+        quantity: { type: integer }
+        unitPrice: { type: number }
+
+    Order:
+      type: object
+      required:
+        - clientId
+        - status
+        - orderProducts
+      properties:
+        clientId: { type: integer }
+        status: { type: string, enum: [ "pending", "completed", "cancelled" ] }
+        orderProducts:
+          type: array
+          items:
+            $ref: "#/components/schemas/OrderProduct"
+
+    OrderUpdate:
+      type: object
+      properties:
+        status: { type: string }
+        orderProducts:
+          type: array
+          items:
+            $ref: "#/components/schemas/OrderProduct"
