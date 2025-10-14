@@ -1,20 +1,20 @@
 // OrderItem model
-import {Model, DataTypes} from "sequelize";
+import {Model, DataTypes, InferAttributes, InferCreationAttributes} from "sequelize";
 import sequelize from "../config/database";
 
-export class OrderItem extends Model {
-    public orderId!: number;
-    public productId!: number;
-    public quantity!: number;
-    public unitPrice!: number;
+export class OrderItem extends Model<InferAttributes<OrderItem>, InferCreationAttributes<OrderItem>> {
+    declare orderId: number;
+    declare productId: number;
+    declare quantity: number;
+    declare unitPrice: number;
 }
 
 OrderItem.init(
     {
-        orderId: {type: DataTypes.INTEGER, primaryKey: true},
-        productId: {type: DataTypes.INTEGER, primaryKey: true},
+        orderId: {field: "order_id", type: DataTypes.INTEGER, primaryKey: true},
+        productId: {field: "product_id", type: DataTypes.INTEGER, primaryKey: true},
         quantity: {type: DataTypes.INTEGER, allowNull: false},
-        unitPrice: {type: DataTypes.DECIMAL, allowNull: false},
+        unitPrice: {field: "unit_price", type: DataTypes.DECIMAL, allowNull: false},
     },
     {
         sequelize,

@@ -9,7 +9,11 @@ import {setupSwagger} from "./docs/swagger";
 
 export function createApp() {
     const app = express();
-    app.use(cors());
+    app.use(cors({
+        origin: `http://localhost:${process.env.PORT}`,
+        methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        allowedHeaders: ["Content-Type", "Authorization"],
+    }));
     app.use(express.json());
     setupSwagger(app);
     app.use("/api", routes);

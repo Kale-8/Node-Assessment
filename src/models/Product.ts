@@ -1,12 +1,12 @@
 // Product model
-import {Model, DataTypes} from "sequelize";
+import {Model, DataTypes, InferAttributes, InferCreationAttributes} from "sequelize";
 import sequelize from "../config/database";
 
-export class Product extends Model {
-    public id!: number;
-    public code!: string;
-    public name!: string;
-    public description!: string | null;
+export class Product extends Model<InferAttributes<Product>, InferCreationAttributes<Product>> {
+    declare id: number;
+    declare code: string;
+    declare name: string;
+    declare description: string | null;
 }
 
 Product.init(
