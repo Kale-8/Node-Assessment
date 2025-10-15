@@ -73,3 +73,65 @@ export async function getOrderHistory() {
 export async function getOrdersByClient(clientId: number) {
     return Order.findAll({where: {clientId}, include: [{association: "items"}, {association: "warehouse"}]});
 }
+
+// Get order by ID
+export async function getOrderById(id: number) {
+    const order = await Order.findByPk(id, {
+        include: [
+            {association: "items", include: [{association: "product"}]},
+            {association: "client"},
+            {association: "warehouse"}
+        ]
+    });
+    if (!order) throw new Error("Order not found");
+    return order;
+}
+
+// Update order
+export async function updateOrder(id: number, data: {
+    status?: "pending" | "in_transit" | "delivered";
+    items?: Array<{
+        productId: number;
+        quantity: number;
+        unitPrice: number;
+    }>;
+}) {
+    const order = await Order.findByPk(id);
+    if (!order) throw new Error("Order not found");
+
+    const t = await sequelize.transaction();
+    try {
+        if (data.status) {
+            order.status = data.status;
+            await order.save({transaction: t});
+        }
+
+        if (data.items) {
+            // Delete existing items
+            await OrderItem.destroy({where: {orderId: id}, transaction: t});
+
+            // Add new items
+            for (const item of data.items) {
+                await OrderItem.create({
+                    orderId: id,
+                    productId: item.productId,
+                    quantity: item.quantity,
+                    unitPrice: item.unitPrice
+                }, {transaction: t});
+            }
+        }
+
+        await t.commit();
+        return await getOrderById(id);
+    } catch (err) {
+        await t.rollback();
+        throw err;
+    }
+}
+
+// Delete order
+export async function deleteOrder(id: number) {
+    const order = await Order.findByPk(id);
+    if (!order) throw new Error("Order not found");
+    await order.destroy();
+}

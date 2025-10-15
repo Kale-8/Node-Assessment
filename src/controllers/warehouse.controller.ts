@@ -7,6 +7,12 @@ export async function listWarehouses(req: Request, res: Response) {
     res.json(warehouses);
 }
 
+export async function createWarehouse(req: Request, res: Response) {
+    const {name, location} = req.body;
+    const warehouse = await warehouseService.createWarehouse(name, location);
+    res.status(201).json(warehouse);
+}
+
 export async function toggleWarehouse(req: Request, res: Response) {
     const id = Number(req.params.id);
     const {active} = req.body;

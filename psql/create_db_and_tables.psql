@@ -35,6 +35,7 @@ CREATE TABLE IF NOT EXISTS addresses (
 CREATE TABLE IF NOT EXISTS warehouses (
   id SERIAL PRIMARY KEY,
   name VARCHAR NOT NULL,
+  location VARCHAR NOT NULL,
   active BOOLEAN NOT NULL DEFAULT TRUE
 );
 
@@ -45,7 +46,9 @@ CREATE TABLE IF NOT EXISTS products (
   id SERIAL PRIMARY KEY,
   code VARCHAR UNIQUE NOT NULL,
   name VARCHAR NOT NULL,
-  description TEXT
+  description TEXT,
+  price NUMERIC(10,2) NOT NULL,
+  stock INTEGER NOT NULL DEFAULT 0
 );
 
 -- ===========================
