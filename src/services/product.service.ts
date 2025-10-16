@@ -4,7 +4,7 @@ import {Product} from "../models";
 // Get product by code
 export async function getProductByCode(code: string) {
     const product = await Product.findOne({where: {code}});
-    if (!product) throw new Error("Product not found");
+    if (!product) throw { status: 404, message: "Product not found" };
     return product;
 }
 
@@ -16,7 +16,7 @@ export async function listProducts() {
 // Create product
 export async function createProduct(code: string, name: string, description: string | null, price: number, stock: number) {
     const existing = await Product.findOne({where: {code}});
-    if (existing) throw new Error("Product with same code already exists");
+    if (existing) throw { status: 409, message: "Product with same code already exists" };
     return await Product.create({code, name, description, price, stock} as any);
 }
 
@@ -28,7 +28,7 @@ export async function updateProduct(code: string, data: {
     stock?: number;
 }) {
     const product = await Product.findOne({where: {code}});
-    if (!product) throw new Error("Product not found");
+    if (!product) throw { status: 404, message: "Product not found" };
     await product.update(data);
     return product;
 }
@@ -36,7 +36,7 @@ export async function updateProduct(code: string, data: {
 // Logical delete product
 export async function logicalDeleteProduct(code: string) {
     const product = await Product.findOne({where: {code}});
-    if (!product) throw new Error("Product not found");
+    if (!product) throw { status: 404, message: "Product not found" };
     // softly delete = mark with code_x_deleted or move to another flag; since the model has no deleted flag, we rename code and name
     product.code = `${product.code}_deleted_${Date.now()}`;
     product.name = `${product.name} (deleted)`;

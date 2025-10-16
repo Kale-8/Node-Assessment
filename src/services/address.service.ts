@@ -5,7 +5,7 @@ import {Address, Client} from "../models";
 export async function createAddress(clientId: number, address: string, city: string) {
     // Verify client exists
     const client = await Client.findByPk(clientId);
-    if (!client) throw new Error("Client not found");
+    if (!client) throw { status: 404, message: "Client not found" };
 
     return await Address.create({clientId, address, city} as any);
 }
@@ -18,19 +18,19 @@ export async function listAddresses() {
 // Get address by ID
 export async function getAddressById(id: number) {
     const addressRecord = await Address.findByPk(id, {include: [{model: Client, as: "client"}]});
-    if (!addressRecord) throw new Error("Address not found");
+    if (!addressRecord) throw { status: 404, message: "Address not found" };
     return addressRecord;
 }
 
 // Update address
 export async function updateAddress(id: number, data: {clientId?: number; address?: string; city?: string}) {
     const addressRecord = await Address.findByPk(id);
-    if (!addressRecord) throw new Error("Address not found");
+    if (!addressRecord) throw { status: 404, message: "Address not found" };
 
     // If clientId is being updated, verify new client exists
     if (data.clientId && data.clientId !== addressRecord.clientId) {
         const client = await Client.findByPk(data.clientId);
-        if (!client) throw new Error("Client not found");
+        if (!client) throw { status: 404, message: "Client not found" };
     }
 
     await addressRecord.update(data);
@@ -40,6 +40,6 @@ export async function updateAddress(id: number, data: {clientId?: number; addres
 // Delete address
 export async function deleteAddress(id: number) {
     const addressRecord = await Address.findByPk(id);
-    if (!addressRecord) throw new Error("Address not found");
+    if (!addressRecord) throw { status: 404, message: "Address not found" };
     await addressRecord.destroy();
 }

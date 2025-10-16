@@ -15,7 +15,7 @@ export async function createWarehouse(name: string, location: string) {
 // Find warehouses by id and changes active status
 export async function toggleWarehouseActive(id: number, active: boolean) {
     const wh = await Warehouse.findByPk(id);
-    if (!wh) throw new Error("Warehouse not found");
+    if (!wh) throw { status: 404, message: "Warehouse not found" };
     wh.active = active;
     await wh.save();
     return wh;
