@@ -23,7 +23,7 @@ export async function createOrder(clientId: number, warehouseId: number, items: 
             {replacements: {warehouseId, productId: it.productId}}
         );
         const stock = rows.length ? Number(rows[0].stock) : 0;
-        if (stock < it.quantity) throw new Error(`Insufficient stock for product ${it.productId}`);
+        if (stock < it.quantity) throw { status: 409, message: `Insufficient stock for product ${it.productId}` };
     }
 
     // Transactional creation
@@ -57,7 +57,7 @@ export async function createOrder(clientId: number, warehouseId: number, items: 
 // Change order status
 export async function changeOrderStatus(orderId: number, status: "pending" | "in_transit" | "delivered") {
     const order = await Order.findByPk(orderId);
-    if (!order) throw new Error("Order not found");
+    if (!order) throw { status: 404, message: "Order not found" };
     // Validate status transition if needed (simple sample)
     order.status = status;
     await order.save();
@@ -83,7 +83,7 @@ export async function getOrderById(id: number) {
             {association: "warehouse"}
         ]
     });
-    if (!order) throw new Error("Order not found");
+    if (!order) throw { status: 404, message: "Order not found" };
     return order;
 }
 
@@ -97,7 +97,7 @@ export async function updateOrder(id: number, data: {
     }>;
 }) {
     const order = await Order.findByPk(id);
-    if (!order) throw new Error("Order not found");
+    if (!order) throw { status: 404, message: "Order not found" };
 
     const t = await sequelize.transaction();
     try {
@@ -132,6 +132,6 @@ export async function updateOrder(id: number, data: {
 // Delete order
 export async function deleteOrder(id: number) {
     const order = await Order.findByPk(id);
-    if (!order) throw new Error("Order not found");
+    if (!order) throw { status: 404, message: "Order not found" };
     await order.destroy();
 }
